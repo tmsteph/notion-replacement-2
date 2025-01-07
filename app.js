@@ -2,7 +2,7 @@ import StorageManager from "./storage.js";
 
 // Display Notes
 const displayNotes = async () => {
-    const notes = (await StorageManager.local.load("notes")) || [];
+    let notes = StorageManager.local.load("notes") || [];
     const content = document.getElementById("content");
     content.innerHTML = `
         <h2>Notes</h2>
@@ -21,8 +21,14 @@ const displayNotes = async () => {
         if (noteInput.value.trim() !== "") {
             notes.push(noteInput.value.trim());
             StorageManager.local.save("notes", notes); // Save locally
-            await StorageManager.ipfs.save("notes", notes); // Sync to IPFS
             displayNotes(); // Refresh view
+
+            // Attempt to sync with IPFS
+            try {
+                await StorageManager.ipfs.save("notes", notes);
+            } catch (error) {
+                console.error("Failed to sync notes to IPFS:", error);
+            }
         }
     });
 
@@ -32,15 +38,21 @@ const displayNotes = async () => {
             const index = e.target.getAttribute("data-index");
             notes.splice(index, 1);
             StorageManager.local.save("notes", notes); // Save locally
-            await StorageManager.ipfs.save("notes", notes); // Sync to IPFS
             displayNotes(); // Refresh view
+
+            // Attempt to sync with IPFS
+            try {
+                await StorageManager.ipfs.save("notes", notes);
+            } catch (error) {
+                console.error("Failed to sync notes to IPFS:", error);
+            }
         });
     });
 };
 
 // Display Tasks
 const displayTasks = async () => {
-    const tasks = (await StorageManager.local.load("tasks")) || [];
+    let tasks = StorageManager.local.load("tasks") || [];
     const content = document.getElementById("content");
     content.innerHTML = `
         <h2>Tasks</h2>
@@ -65,8 +77,14 @@ const displayTasks = async () => {
         if (taskInput.value.trim() !== "") {
             tasks.push({ text: taskInput.value.trim(), completed: false });
             StorageManager.local.save("tasks", tasks); // Save locally
-            await StorageManager.ipfs.save("tasks", tasks); // Sync to IPFS
             displayTasks(); // Refresh view
+
+            // Attempt to sync with IPFS
+            try {
+                await StorageManager.ipfs.save("tasks", tasks);
+            } catch (error) {
+                console.error("Failed to sync tasks to IPFS:", error);
+            }
         }
     });
 
@@ -76,8 +94,14 @@ const displayTasks = async () => {
             const index = e.target.getAttribute("data-index");
             tasks[index].completed = e.target.checked;
             StorageManager.local.save("tasks", tasks); // Save locally
-            await StorageManager.ipfs.save("tasks", tasks); // Sync to IPFS
             displayTasks(); // Refresh view
+
+            // Attempt to sync with IPFS
+            try {
+                await StorageManager.ipfs.save("tasks", tasks);
+            } catch (error) {
+                console.error("Failed to sync tasks to IPFS:", error);
+            }
         });
     });
 
@@ -87,50 +111,21 @@ const displayTasks = async () => {
             const index = e.target.getAttribute("data-index");
             tasks.splice(index, 1);
             StorageManager.local.save("tasks", tasks); // Save locally
-            await StorageManager.ipfs.save("tasks", tasks); // Sync to IPFS
             displayTasks(); // Refresh view
+
+            // Attempt to sync with IPFS
+            try {
+                await StorageManager.ipfs.save("tasks", tasks);
+            } catch (error) {
+                console.error("Failed to sync tasks to IPFS:", error);
+            }
         });
     });
-};
-
-// Export JSON
-const exportJSON = async () => {
-    const notes = (await StorageManager.local.load("notes")) || [];
-    const tasks = (await StorageManager.local.load("tasks")) || [];
-
-    const data = { notes, tasks };
-    const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "backup.json";
-    link.click();
-};
-
-// Import JSON
-const importJSON = (file) => {
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-        const data = JSON.parse(event.target.result);
-        if (data.notes) {
-            await StorageManager.local.save("notes", data.notes);
-            await StorageManager.ipfs.save("notes", data.notes);
-        }
-        if (data.tasks) {
-            await StorageManager.local.save("tasks", data.tasks);
-            await StorageManager.ipfs.save("tasks", data.tasks);
-        }
-        alert("Data imported successfully!");
-    };
-    reader.readAsText(file);
 };
 
 // Navigation
 document.getElementById("notes-tab").addEventListener("click", displayNotes);
 document.getElementById("tasks-tab").addEventListener("click", displayTasks);
-document.getElementById("export-json").addEventListener("click", exportJSON);
-document.getElementById("import-json").addEventListener("change", (e) => {
-    importJSON(e.target.files[0]);
-});
 
 // Load Notes by Default
 window.onload = displayNotes;
