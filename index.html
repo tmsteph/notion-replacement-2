@@ -1,20 +1,24 @@
-<\!DOCTYPE html>
-<html lang='en'>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<meta charset='UTF-8'>
-<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-<title>MVP Notion Clone</title>
-<link rel='stylesheet' href='styles.css'>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular App with IPFS</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/ipfs-http-client/dist/index.min.js"></script>
 </head>
 <body>
-<header>
-<h1>Notion Clone MVP</h1>
-</header>
-<nav>
-<button id='notes-tab'>Notes</button>
-<button id='tasks-tab'>Tasks</button>
-</nav>
-<main id='content'></main>
-<script src='app.js'></script>
+    <header>
+        <h1>Modular App with IPFS</h1>
+    </header>
+    <nav>
+        <button id="notes-tab">Notes</button>
+        <button id="tasks-tab">Tasks</button>
+        <button id="export-json">Export JSON</button>
+        <input type="file" id="import-json" />
+    </nav>
+    <main id="content"></main>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
+

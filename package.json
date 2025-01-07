@@ -1,0 +1,11 @@
+{
+  "name": "notion-replacement",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "vite"
+  },
+  "dependencies": {
+    "ipfs-http-client": "^60.0.1",
+    "vite": "^6.0.7"
+  }
+}
